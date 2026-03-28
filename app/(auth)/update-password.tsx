@@ -1,24 +1,32 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { useAuthStore } from '@/store/auth';
 
-export default function SignIn() {
-  const { signIn } = useAuthStore();
-  const [email, setEmail] = useState('');
+export default function UpdatePassword() {
+  const { updatePassword } = useAuthStore();
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSignIn = async () => {
+  const handleUpdate = async () => {
+    if (password !== confirm) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
     setError(null);
     setLoading(true);
-    const { error } = await signIn(email, password);
+    const { error } = await updatePassword(password);
     setLoading(false);
     if (error) {
       setError(error);
     } else {
-      router.replace('/(tabs)');
+      router.replace('/(auth)/sign-in');
     }
   };
 
@@ -28,8 +36,8 @@ export default function SignIn() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View className="flex-1 justify-center px-6">
-        <Text className="text-3xl font-bold text-brand-700 mb-2">carbonyeah</Text>
-        <Text className="text-gray-500 mb-8">Sign in to your community</Text>
+        <Text className="text-3xl font-bold text-brand-700 mb-2">New password</Text>
+        <Text className="text-gray-500 mb-8">Choose a strong password for your account.</Text>
 
         {error && (
           <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
@@ -39,45 +47,33 @@ export default function SignIn() {
 
         <TextInput
           className="border border-gray-200 rounded-xl px-4 py-3 mb-3 text-base"
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-        />
-
-        <TextInput
-          className="border border-gray-200 rounded-xl px-4 py-3 mb-3 text-base"
-          placeholder="Password"
+          placeholder="New password"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          autoComplete="password"
+          autoComplete="new-password"
         />
 
-        <Link href="/(auth)/forgot-password" className="text-brand-600 text-sm mb-6 self-end">
-          Forgot password?
-        </Link>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3 mb-6 text-base"
+          placeholder="Confirm new password"
+          value={confirm}
+          onChangeText={setConfirm}
+          secureTextEntry
+          autoComplete="new-password"
+        />
 
         <TouchableOpacity
           className="bg-brand-600 rounded-xl py-4 items-center"
-          onPress={handleSignIn}
+          onPress={handleUpdate}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="text-white font-semibold text-base">Sign In</Text>
+            <Text className="text-white font-semibold text-base">Update Password</Text>
           )}
         </TouchableOpacity>
-
-        <View className="flex-row justify-center mt-6">
-          <Text className="text-gray-500">No account? </Text>
-          <Link href="/(auth)/sign-up" className="text-brand-600 font-semibold">
-            Sign up
-          </Link>
-        </View>
       </View>
     </KeyboardAvoidingView>
   );
