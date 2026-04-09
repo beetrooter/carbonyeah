@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useAuthStore } from '@/store/auth';
 
 export default function UpdatePassword() {
-  const { updatePassword } = useAuthStore();
+  const { updatePassword, signOut } = useAuthStore();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +26,7 @@ export default function UpdatePassword() {
     if (error) {
       setError(error);
     } else {
+      await signOut();
       router.replace('/(auth)/sign-in');
     }
   };
