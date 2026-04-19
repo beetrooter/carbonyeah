@@ -28,6 +28,8 @@ export default function RootLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="log" options={{ presentation: 'modal', headerShown: false }} />
+      <Stack.Screen name="edit-log" options={{ presentation: 'modal', headerShown: false }} />
     </Stack>
   );
 }
