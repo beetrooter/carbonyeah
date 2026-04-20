@@ -140,7 +140,7 @@ export default function Dashboard() {
 
       if (memberships) {
         const cId = memberships.community_id as string;
-        const cName = (memberships.communities as { name: string } | null)?.name ?? null;
+        const cName = (memberships.communities as unknown as { name: string } | null)?.name ?? null;
         setCommunityName(cName);
 
         const [commKg, memberCount] = await Promise.all([
